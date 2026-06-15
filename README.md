@@ -2,6 +2,20 @@
 
 Train a Faster R-CNN model on a vegetable dataset from a `dataset.zip` file.
 
+## Download Dataset
+
+### Linux/macOS
+```bash
+bash download_dataset.sh ./data
+```
+
+### Windows (PowerShell)
+```powershell
+powershell -ExecutionPolicy Bypass -File download_dataset.ps1 -OutputDir ".\data"
+```
+
+This downloads `dataset.zip` from Kaggle.
+
 ## Build
 
 ```bash
