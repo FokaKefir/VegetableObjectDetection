@@ -2,27 +2,65 @@
 
 Train a Faster R-CNN model on a vegetable dataset from a `dataset.zip` file, or run a simple local web app to load a saved `.pth` model and predict on uploaded images.
 
-## Download Dataset
+## Dataset Download
 
 ### Linux/macOS
-## Run Web App
+```bash
 bash download_dataset.sh ./data
-Start the site on `http://localhost:8000`:
+```
 
 ### Windows (PowerShell)
+```powershell
+powershell -ExecutionPolicy Bypass -File download_dataset.ps1 -OutputDir ".\data"
+```
+
+This downloads `dataset.zip` into `./data`.
+
+## Build Docker Image
+
+```bash
+docker build -t vegetable-detector .
+```
+
+## Run the Web App
+
+Start the browser UI on `http://localhost:8000`:
+
+### Linux/macOS
+```bash
+docker run --rm -p 8000:8000 \
+  -v "$PWD/models":/models \
+  -e MODEL_PATH=/models/model.pth \
+  vegetable-detector
+```
+
+### Windows (PowerShell)
+```powershell
 docker run --rm -p 8000:8000 ^
   -v %cd%/models:/models ^
   -e MODEL_PATH=/models/model.pth ^
   vegetable-detector
-docker build -t vegetable-detector .
 ```
-You can also upload a `.pth` file directly in the page if you do not want to mount a model path.
+
+You can also upload a `.pth` file directly in the page.
 
 ## Train From Docker
 
-Put `dataset.zip` in `./data/` and run:
-
+### Linux/macOS
 ```bash
+docker run --rm \
+  -v "$PWD/data":/data \
+  -v "$PWD/outputs":/outputs \
+  vegetable-detector \
+  main.py \
+  --dataset-zip /data/dataset.zip \
+  --output-dir /outputs \
+  --dataset-percent 20 \
+  --epochs 3
+```
+
+### Windows (PowerShell)
+```powershell
 docker run --rm ^
   -v %cd%/data:/data ^
   -v %cd%/outputs:/outputs ^
@@ -30,44 +68,19 @@ docker run --rm ^
   main.py ^
   --dataset-zip /data/dataset.zip ^
   --output-dir /outputs ^
-  --dataset-percent 50 ^
-  --no-preload ^
+  --dataset-percent 20 ^
   --epochs 3
 ```
 
+## Web App Files
 
-## Run
-- `main.py` is the training entrypoint.
-- `app.py` starts the web UI.
-- `--dataset-percent` controls how much of the dataset is used.
-- Use `--preload` instead of `--no-preload` if you want to keep images in RAM.
-- Model checkpoints are saved to the output folder.
-```bash
-docker run --rm ^
-  -v %cd%/data:/data ^
-  -v %cd%/outputs:/outputs ^
-  vegetable-detector ^
-  --dataset-zip /data/dataset.zip ^
-  --output-dir /outputs ^
-  --dataset-percent 50 ^
-  --no-preload ^
-  --epochs 3
-```
-
-```bash
-docker run --rm \
-  -v "$PWD":/data \
-  -v "$PWD/outputs":/outputs \
-  vegetable-detector \
-  --dataset-zip /data/dataset.zip \
-  --output-dir /outputs \
-  --dataset-percent 20 \
-  --epochs 3
-```
-
+- `web/app.py` runs the Flask web app.
+- `web/index.html` contains the UI.
+- `web/requirements.txt` lists the web-only Python dependencies.
+- `web/README.md` explains how to run the web app in a local `.venv`.
 
 ## Notes
 
 - `--dataset-percent` controls how much of the dataset is used.
-- Use `--preload` instead of `--no-preload` if you want to keep images in RAM.
+- `--preload` keeps images in RAM; `--no-preload` loads them from disk.
 - Model checkpoints are saved to the output folder.
