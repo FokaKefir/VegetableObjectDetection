@@ -38,6 +38,18 @@ docker run --rm ^
   --epochs 3
 ```
 
+```bash
+docker run --rm \
+  -v "$PWD":/data \
+  -v "$PWD/outputs":/outputs \
+  vegetable-detector \
+  --dataset-zip /data/dataset.zip \
+  --output-dir /outputs \
+  --dataset-percent 20 \
+  --epochs 3
+```
+
+
 ## Notes
 
 - `--dataset-percent` controls how much of the dataset is used.
