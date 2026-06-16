@@ -220,8 +220,10 @@
     }
 
     function drawImageAndPredictions(image, predictions) {
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
+      const width = image.naturalWidth || image.width;
+      const height = image.naturalHeight || image.height;
+      canvas.width = width;
+      canvas.height = height;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, 0, 0);
 
@@ -324,9 +326,21 @@
         return;
       }
 
+      const file = imgInput.files[0];
       const image = new Image();
       image.onload = () => drawImageAndPredictions(image, data.predictions);
-      image.src = URL.createObjectURL(imgInput.files[0]);
+
+      if ('createImageBitmap' in window) {
+        try {
+          const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+          drawImageAndPredictions(bitmap, data.predictions);
+        } catch {
+          image.src = URL.createObjectURL(file);
+        }
+      } else {
+        image.src = URL.createObjectURL(file);
+      }
+
       renderResults(data.predictions);
       setStatus(`Prediction complete. ${data.predictions.length} detection(s) found.`);
     }

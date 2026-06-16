@@ -10,7 +10,7 @@ import torch
 from torchvision import models
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from flask import Flask, jsonify, request, send_from_directory
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 CLASS_NAMES = {
@@ -44,7 +44,7 @@ NUM_MODEL_CLASSES = len(CLASS_NAMES) + 1
 DEVICE = resolve_device()
 UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", "/tmp/vegetable-web"))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-DEFAULT_MODEL_PATH = os.environ.get("MODEL_PATH", "")
+DEFAULT_MODEL_PATH = os.environ.get("MODEL_PATH", "./best_model.pth")
 SCORE_THRESHOLD = float(os.environ.get("SCORE_THRESHOLD", 0.5))
 
 WEB_DIR = Path(__file__).resolve().parent
@@ -142,7 +142,7 @@ def predict():
     if image_file is None:
         return jsonify({"ok": False, "message": "No image uploaded."}), 400
 
-    image = Image.open(io.BytesIO(image_file.read())).convert("RGB")
+    image = ImageOps.exif_transpose(Image.open(io.BytesIO(image_file.read()))).convert("RGB")
     image_array = np.array(image, dtype=np.float32) / 255.0
     image_tensor = torch.from_numpy(image_array).permute(2, 0, 1)
 
