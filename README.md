@@ -2,7 +2,23 @@
 
 Train a Faster R-CNN model on a vegetable dataset from a `dataset.zip` file, or run a simple local web app to load a saved `.pth` model and predict on uploaded images.
 
-## Dataset Download
+## Download Assets
+
+### Best Model
+
+### Linux/macOS
+```bash
+bash download_best_model.sh ./models
+```
+
+### Windows (PowerShell)
+```powershell
+powershell -ExecutionPolicy Bypass -File download_best_model.ps1 -OutputDir ".\models"
+```
+
+This downloads `best_model.pth` into `./models`.
+
+### Kaggle Dataset
 
 ### Linux/macOS
 ```bash
@@ -14,7 +30,21 @@ bash download_dataset.sh ./data
 powershell -ExecutionPolicy Bypass -File download_dataset.ps1 -OutputDir ".\data"
 ```
 
-This downloads `dataset.zip` into `./data`.
+This downloads the older Kaggle `dataset.zip` into `./data`.
+
+### Custom Dataset
+
+### Linux/macOS
+```bash
+bash download_custom_dataset.sh ./data
+```
+
+### Windows (PowerShell)
+```powershell
+powershell -ExecutionPolicy Bypass -File download_custom_dataset.ps1 -OutputDir ".\data"
+```
+
+This downloads `custom_dataset.zip` into `./data`.
 
 ## Build Docker Image
 
