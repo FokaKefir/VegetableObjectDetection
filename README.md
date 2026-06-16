@@ -52,27 +52,6 @@ This downloads `custom_dataset.zip` into `./data`.
 docker build -t vegetable-detector .
 ```
 
-## Run the Web App
-
-Start the browser UI on `http://localhost:8000`:
-
-### Linux/macOS
-```bash
-docker run --rm -p 8000:8000 \
-  -v "$PWD/models":/models \
-  -e MODEL_PATH=/models/model.pth \
-  vegetable-detector
-```
-
-### Windows (PowerShell)
-```powershell
-docker run --rm -p 8000:8000 ^
-  -v %cd%/models:/models ^
-  -e MODEL_PATH=/models/model.pth ^
-  vegetable-detector
-```
-
-You can also upload a `.pth` file directly in the page.
 
 ## Train From Docker
 
